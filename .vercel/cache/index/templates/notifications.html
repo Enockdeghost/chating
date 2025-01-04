@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Chat App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav>
+        <div class="nav-wrapper">
+            <span>Notifications</span>
+            <div>
+                <a href="{{ url_for('chat_dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="notifications-container">
+            {% if notifications %}
+                {% for notification in notifications %}
+                    <div class="notification-item {% if not notification.is_read %}unread{% endif %}">
+                        <div class="notification-content">
+                            <p>{{ notification.content }}</p>
+                            <small class="notification-time">
+                                {{ notification.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}
+                            </small>
+                        </div>
+                        <div class="notification-type">
+                            <span class="badge badge-{{ notification.type }}">
+                                {{ notification.type }}
+                            </span>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-notifications">
+                    <p>No notifications to display</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html> 

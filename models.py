@@ -13,8 +13,14 @@ class User(UserMixin, db.Model):
     avatar_url = db.Column(db.String(200))
     is_admin = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    theme = db.Column(db.String(20), default='light')
+    language = db.Column(db.String(5), default='en')
+    notifications_enabled = db.Column(db.Boolean, default=True)
+    auto_translate = db.Column(db.Boolean, default=False)
     
-    # Add these relationships
+    # Relationships
+    status = db.relationship('UserStatus', backref='user', uselist=False)
     groups = db.relationship('GroupChat', secondary='group_member', 
                            backref=db.backref('user_members', lazy='dynamic'))
 
@@ -60,7 +66,32 @@ class GroupMember(db.Model):
 class Notification(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    content = db.Column(db.String(500), nullable=False)
-    type = db.Column(db.String(50), nullable=False)  # 'admin', 'chat', 'group'
-    is_read = db.Column(db.Boolean, default=False)
+    content = db.Column(db.String(200), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    is_read = db.Column(db.Boolean, default=False)
+    type = db.Column(db.String(50))
+
+class ChatReaction(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    message_id = db.Column(db.Integer, nullable=False)
+    message_type = db.Column(db.String(20))  # 'private' or 'group'
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    reaction = db.Column(db.String(50))
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+class ChatPoll(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    group_id = db.Column(db.Integer, db.ForeignKey('group_chat.id'))
+    question = db.Column(db.String(200))
+    options = db.Column(db.JSON)
+    votes = db.Column(db.JSON)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    expires_at = db.Column(db.DateTime)
+
+class UserStatus(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    status_type = db.Column(db.String(20))  # 'away', 'busy', 'invisible'
+    custom_message = db.Column(db.String(100))
+    expires_at = db.Column(db.DateTime, nullable=True)

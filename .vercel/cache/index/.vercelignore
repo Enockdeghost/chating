@@ -1,0 +1,12 @@
+*.pyc
+__pycache__
+.pytest_cache
+.coverage
+htmlcov
+.env
+.venv
+env/
+venv/
+ENV/
+instance/
+.webassets-cache 
