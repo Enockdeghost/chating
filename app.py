@@ -1,6 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, Response, stream_with_context
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_migrate import Migrate
+from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_sqlalchemy import SQLAlchemy
+from flask_socketio import SocketIO, send, emit, join_room, leave_room
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, PrivateMessage, GroupChat, GroupMessage, GroupMember, Notification
 from forms import SignUpForm, LoginForm, MessageForm, GroupChatForm, ProfileForm
@@ -14,7 +20,7 @@ import time
 from flask import session
 
 app = Flask(__name__, static_url_path='/static')
-app.config['SECRET_KEY'] = 'your_secret_key_here'
+app.config['SECRET_KEY'] = 'enock'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chat.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -375,7 +381,81 @@ def select_chat(chat_type, chat_id):
             } for msg in messages]
         })
 
+
+from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_sqlalchemy import SQLAlchemy
+from flask_socketio import SocketIO, send, emit, join_room, leave_room
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
+
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your_secret_key'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chat.db'
+db = SQLAlchemy(app)
+socketio = SocketIO(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(150), nullable=False)
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(150), nullable=False)
+    text = db.Column(db.String(500), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+@app.route('/chat')
+@login_required
+def chat():
+    return render_template('chat.html', username=current_user.username)
+
+@socketio.on('message')
+def handle_message(msg):
+    message = Message(username=current_user.username, text=msg)
+    db.session.add(message)
+    db.session.commit()
+    send({'username': current_user.username, 'text': msg, 'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S')}, broadcast=True)
+
+@socketio.on('typing')
+def handle_typing(data):
+    emit('typing', {'username': data['username'], 'typing': data['typing']}, broadcast=True)
+
+@socketio.on('join')
+def on_join(data):
+    username = data['username']
+    room = data['room']
+    join_room(room)
+    send(f'{username} has entered the room.', to=room)
+
+@socketio.on('leave')
+def on_leave(data):
+    username = data['username']
+    room = data['room']
+    leave_room(room)
+    send(f'{username} has left the room.', to=room)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('500.html'), 500
+
+
+
 if __name__ == '__main__':
+    db.create_all()
+    socketio.run(app)
     with app.app_context():
         db.create_all()
     app.run(debug=True)
+    
