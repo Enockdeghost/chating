@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <aside class="sidebar">
+        <div class="sidebar-search">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search chats...">
+        </div>
+        
+        <div class="chat-list">
+            <!-- Recent Chats -->
+            {% for chat in recent_chats %}
+            <div class="chat-item">
+                <div class="chat-avatar">
+                    {{ chat.username[0].upper() }}
+                </div>
+                <div class="chat-info">
+                    <div class="chat-name">{{ chat.username }}</div>
+                    <div class="chat-preview">{{ chat.last_message }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-header">
+            <h1 class="welcome-message">Welcome back, {{ current_user.username }}!</h1>
+            <div class="header-actions">
+                <button class="action-btn">
+                    <i class="fas fa-plus"></i>
+                    New Chat
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-users"></i>
+                    New Group
+                </button>
+            </div>
+        </div>
+
+        <div class="content-area">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Total Messages</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                </div>
+                <div class="stat-value">{{ stats.total_messages }}</div>
+                <div class="stat-description">Messages sent and received</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Active Chats</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                </div>
+                <div class="stat-value">{{ stats.active_chats }}</div>
+                <div class="stat-description">Ongoing conversations</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Groups</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="stat-value">{{ stats.groups }}</div>
+                <div class="stat-description">Active group chats</div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %} 

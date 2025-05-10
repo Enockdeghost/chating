@@ -42,4 +42,23 @@ class ThemeManager {
 // Initialize theme manager when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new ThemeManager();
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const themeButtons = document.querySelectorAll('.theme-btn');
+    
+    themeButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const theme = this.dataset.theme;
+            document.documentElement.setAttribute('data-theme', theme);
+            
+            fetch('/theme', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ theme: theme })
+            });
+        });
+    });
 }); 

@@ -1,59 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask Chat App</title>
+    <title>Chat Room</title>
     <style>
-        .chat-container {
-            max-width: 800px;
-            margin: 0 auto;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+        }
+
+        #container {
+            display: flex;
+            height: 100vh;
+        }
+
+        #contacts {
+            width: 25%;
+            background-color: #34495e;
+            overflow-y: scroll;
+            border-right: 1px solid #7f8c8d;
             padding: 20px;
         }
-        .message {
-            background-color: #f0f0f0;
+
+        #chat {
+            width: 75%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        .contact {
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid #7f8c8d;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #messages {
+            flex-grow: 1;
+            border: 1px solid #7f8c8d;
             padding: 10px;
-            margin: 10px 0;
+            margin-bottom: 10px;
+            height: 300px;
+            overflow-y: scroll;
+            background-color: #34495e;
+        }
+
+        #messageInput {
+            display: flex;
+        }
+
+        #message {
+            width: 80%;
+            padding: 10px;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            border: none;
             border-radius: 5px;
         }
-        .message-form {
-            margin-top: 20px;
+
+        button {
+            width: 20%;
+            padding: 10px;
+            margin-left: 10px;
+            background-color: #1abc9c;
+            color: #ecf0f1;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
-        .message-form input[type="text"] {
-            width: 200px;
-            padding: 5px;
-        }
-        .message-form textarea {
-            width: 100%;
-            padding: 5px;
+
+        button:hover {
+            background-color: #16a085;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 </head>
 <body>
-    <div class="chat-container">
-        <h1>Flask Chat App</h1>
-        
-        <div class="message-form">
-            <form method="POST">
-                <div>
-                    <input type="text" name="username" placeholder="Your name" required>
-                </div>
-                <div>
-                    <textarea name="message" placeholder="Type your message" required></textarea>
-                </div>
-                <button type="submit">Send</button>
-            </form>
+    <div id="container">
+        <div id="contacts">
+            <div class="contact">enock</div>
+            <div class="contact">sir meena</div>
+            <div class="contact">Marco Reus</div>
+            <div class="contact">i dont kn ow</div>
+            <div class="contact">who care</div>
         </div>
-
-        <div class="messages">
-            {% for message in messages %}
-            <div class="message">
-                <strong>{{ message.username }}</strong>
-                <small>({{ message.timestamp.strftime('%Y-%m-%d %H:%M:%S') }})</small>
-                <p>{{ message.content }}</p>
+        <div id="chat">
+            <div id="messages"></div>
+            <div id="messageInput">
+                <input id="message" type="text" placeholder="Type your message...">
+                <button onclick="sendMessage()">Send</button>
             </div>
-            {% endfor %}
         </div>
     </div>
+
+    <script>
+        const socket = io();
+
+        socket.on('connect', function() {
+            console.log('Connected to the server');
+        });
+
+        socket.on('message', function(msg) {
+            const messages = document.getElementById('messages');
+            const messageItem = document.createElement('div');
+            messageItem.textContent = `${msg.timestamp} - ${msg.username}: ${msg.text}`;
+            messages.appendChild(messageItem);
+        });
+
+        function sendMessage() {
+            const messageInput = document.getElementById('message');
+            const message = messageInput.value;
+            socket.emit('message', message);
+            messageInput.value = '';
+        }
+    </script>
 </body>
-</html> 
+</html>

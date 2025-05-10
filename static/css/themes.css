@@ -1,0 +1,26 @@
+:root[data-theme="light"] {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f6f8;
+    --chat-text: #1a1a1a;
+    --chat-secondary: #666666;
+    --chat-border: #e5e7eb;
+    --chat-hover: #f3f4f6;
+}
+
+:root[data-theme="dark"] {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --chat-text: #ffffff;
+    --chat-secondary: #a0a0a0;
+    --chat-border: #404040;
+    --chat-hover: #363636;
+}
+
+:root[data-theme="purple"] {
+    --bg-primary: #2d1b69;
+    --bg-secondary: #1f1147;
+    --chat-text: #ffffff;
+    --chat-secondary: #b8a8e3;
+    --chat-border: #4a3b82;
+    --chat-hover: #382359;
+} 

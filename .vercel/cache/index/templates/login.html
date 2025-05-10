@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-container">
+    <h1>Login</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.email.label }}
+            {{ form.email(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.password.label }}
+            {{ form.password(class="form-control") }}
+        </div>
+        {{ form.submit(class="btn btn-primary") }}
+    </form>
+    <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a></p>
+</div>
+{% endblock %} 
