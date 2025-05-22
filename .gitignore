@@ -1,165 +1,29 @@
+# Virtual environment
+venv/
+env/
+
+# Database
+*.db
+*.sqlite3
+
+# Uploaded files
+static/uploads/*
+!static/uploads/.gitkeep
+
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
 
-# Virtual Environment
-venv/
-ENV/
-env/
-.env
-.venv
-env.bak/
-venv.bak/
-bin/
-include/
-pip-selfcheck.json
-pyvenv.cfg
-share/
-Scripts/
-
-# Flask
-instance/
-.webassets-cache
-*.db
-*.sqlite
-*.sqlite3
-flask_session/
-.flask_session/
-
-# IDE specific files
-.idea/
+# IDE
 .vscode/
-*.swp
-*.swo
-.project
-.pydevproject
-.settings/
-*.sublime-workspace
-*.sublime-project
-.vs/
-*.code-workspace
-.history/
-*.iml
+.idea/
 
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-desktop.ini
-$RECYCLE.BIN/
-*.lnk
+# Environment variables
+.env
 
-# Application specific
-static/uploads/*
-!static/uploads/.gitkeep
-migrations/
+# Logs
 *.log
-.env.local
-.env.development
-.env.test
-.env.production
-*.env
-.flaskenv
-config.py
-settings.json
-credentials.json
-secret_key.txt
 
-# Dependency directories
-node_modules/
-jspm_packages/
-bower_components/
-vendor/
-
-# Distribution directories
-dist/
-build/
-public/
-
-# Misc
-*.bak
-*.tmp
-*.temp
-.coverage
-htmlcov/
-.pytest_cache/
-.tox/
-.nox/
-.coverage.*
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
-*.mo
-*.pot
-*.log.*
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# Vercel
-.vercel
-.vercel/
-vercel.json
-
-# Backup files
-*~
-*.orig
-*.rej
-*.bak
-*.old
-*.swp
-*.swo
-*.swn
-*.pyc.bak
-
-# System files
-Thumbs.db:encryptable
-Icon?
-*.stackdump
-
-# Debug files
-debug.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Cache directories
-.mypy_cache/
-.dmypy.json
-dmypy.json
-.pyre/
-.pytype/
-__pypackages__/
-.ruff_cache/
-.pytest_cache/
-.cache
-.sass-cache/
-
+# Migration files
+migrations/

@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="chat-header">
+        <div class="user-info">
+            {% if other_user.avatar_url %}
+                <img src="{{ url_for('static', filename=other_user.avatar_url) }}" alt="{{ other_user.username }}" class="chat-avatar">
+            {% else %}
+                <div class="chat-avatar-placeholder">{{ other_user.username[0].upper() }}</div>
+            {% endif %}
+            <h2>{{ other_user.username }}</h2>
+        </div>
+    </div>
+
+    <div class="chat-messages" id="chat-messages">
+        {% for message in messages %}
+        <div class="message {% if message.sender_id == current_user.id %}sent{% else %}received{% endif %}">
+            <div class="message-content">
+                <p>{{ message.content }}</p>
+                <small>{{ message.timestamp.strftime('%H:%M') }}</small>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="message-form">
+        <form id="messageForm" method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.content(class="form-control", placeholder="Type your message...") }}
+            </div>
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
+    </div>
+</div>
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const messageForm = document.getElementById('messageForm');
+    const chatMessages = document.getElementById('chat-messages');
+    const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+
+    // Function to scroll to bottom of chat
+    function scrollToBottom() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Initial scroll
+    scrollToBottom();
+
+    // Handle form submission
+    messageForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(messageForm);
+        const response = await fetch(window.location.href, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': csrfToken
+            }
+        });
+
+        if (response.ok) {
+            messageForm.reset();
+        }
+    });
+
+    // Set up SSE for real-time updates
+    const eventSource = new EventSource("{{ url_for('stream_private_messages', user_id=other_user.id) }}");
+    
+    eventSource.onmessage = function(e) {
+        const messages = JSON.parse(e.data);
+        messages.forEach(message => {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${message.is_sent ? 'sent' : 'received'}`;
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <p>${message.content}</p>
+                    <small>${message.timestamp}</small>
+                </div>
+            `;
+            chatMessages.appendChild(messageDiv);
+        });
+        scrollToBottom();
+    };
+
+    // Clean up EventSource on page unload
+    window.addEventListener('unload', function() {
+        eventSource.close();
+    });
+});
+</script>
+{% endblock %}
+{% endblock %} 

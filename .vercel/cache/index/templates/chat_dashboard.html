@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+{% endblock %}
+
+{% block nav_items %}
+<a href="{{ url_for('profile') }}" class="nav-link">
+    {% if current_user.avatar_url %}
+        <img src="{{ url_for('static', filename=current_user.avatar_url) }}" alt="Profile" class="nav-avatar">
+    {% else %}
+        <i class="fas fa-user-circle"></i>
+    {% endif %}
+</a>
+<a href="{{ url_for('notifications') }}" class="nav-link notifications">
+    <i class="fas fa-bell"></i>
+    {% if notifications %}
+        <span class="badge pulse">{{ notifications|length }}</span>
+    {% endif %}
+</a>
+<a href="{{ url_for('logout') }}" class="nav-link">
+    <i class="fas fa-sign-out-alt"></i>
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="sidebar">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" data-translate="search" placeholder="Tafuta watumiaji au vikundi...">
+        </div>
+
+        <div class="chat-sections">
+            <div class="section-header">
+                <h3><i class="fas fa-user-friends"></i> Private Chats</h3>
+            </div>
+            <ul class="user-list" id="userList">
+                {% for user in users %}
+                <li>
+                    <a href="{{ url_for('private_chat', user_id=user.id) }}" class="user-item">
+                        {% if user.avatar_url %}
+                            <img src="{{ url_for('static', filename=user.avatar_url) }}" alt="{{ user.username }}" class="chat-avatar">
+                        {% else %}
+                            <div class="chat-avatar-placeholder">{{ user.username[0].upper() }}</div>
+                        {% endif %}
+                        <div class="user-info">
+                            <span class="username">{{ user.username }}</span>
+                            <span class="last-seen" data-translate="lastSeen">Alionekana hivi karibuni</span>
+                        </div>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <div class="section-header">
+                <h3><i class="fas fa-users"></i> Group Chats</h3>
+                <a href="{{ url_for('create_group') }}" class="btn btn-create-group">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+            <ul class="group-list">
+                {% for group in groups %}
+                <li>
+                    <a href="{{ url_for('group_chat', group_id=group.id) }}" class="group-item">
+                        <div class="group-avatar">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="group-info">
+                            <span class="group-name">{{ group.name }}</span>
+                            <span class="member-count">{{ group.members|length }} <span data-translate="members">wanachama</span></span>
+                        </div>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="welcome-section">
+            <h1 data-translate="welcome">Karibu kwenye Ni Kuchatika tu</h1>
+            <p data-translate="selectChat">Chagua chat kuanza kuwasiliana</p>
+            <div class="features">
+                <div class="feature-card">
+                    <i class="fas fa-user-shield"></i>
+                    <h3 data-translate="privateChat">Chat Binafsi</h3>
+                    <p data-translate="privateDesc">Tuma ujumbe kwa mtu binafsi</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-users"></i>
+                    <h3 data-translate="groupChat">Chat ya Kikundi</h3>
+                    <p data-translate="groupDesc">Unda na jiunge na mazungumzo ya kikundi</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-bell"></i>
+                    <h3 data-translate="notifications">Arifa</h3>
+                    <p data-translate="notifDesc">Pokea taarifa za papo kwa papo</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_scripts %}
+<script>
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const userItems = document.querySelectorAll('#userList li');
+        
+        userItems.forEach(item => {
+            const username = item.querySelector('.username').textContent.toLowerCase();
+            if (username.includes(searchTerm)) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %} 
