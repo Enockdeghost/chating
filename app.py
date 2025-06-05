@@ -23,7 +23,7 @@ app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = 'enock'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chat.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+#onitialozing db
 db.init_app(app)
 migrate = Migrate(app, db)
 
