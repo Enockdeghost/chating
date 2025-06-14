@@ -1,0 +1,8 @@
+Flask==3.0.3
+flask-sqlalchemy
+flask-login
+flask-migrate
+flask-wtf
+email_validator
+werkzeug 
+@vercel/blob 

@@ -1,0 +1,345 @@
+/* Auth Pages Styling */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(45deg, #0b0b3b, #3f2b96);
+    position: relative;
+    overflow: hidden;
+    padding: 20px;
+}
+
+/* Decorative Background Elements */
+.auth-container::before,
+.auth-container::after {
+    content: '';
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+    animation: float 10s infinite alternate;
+}
+
+.auth-container::before {
+    background: radial-gradient(circle, #ff3d7f, #ff2d2d);
+    top: -100px;
+    left: -100px;
+}
+
+.auth-container::after {
+    background: radial-gradient(circle, #3d91ff, #2d6cff);
+    bottom: -100px;
+    right: -100px;
+    animation-delay: -5s;
+}
+
+/* Floating Particles */
+.particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.2;
+    animation: particles 20s linear infinite;
+}
+
+.auth-box {
+    width: 100%;
+    max-width: 420px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    z-index: 1;
+    animation: slideUp 0.5s ease-out, glow 3s infinite alternate;
+}
+
+/* Glowing Border Effect */
+.auth-box::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #ff3d7f, #3d91ff, #2d6cff, #ff2d2d);
+    border-radius: 25px;
+    z-index: -1;
+    filter: blur(10px);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.auth-box:hover::before {
+    opacity: 0.5;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 32px;
+    position: relative;
+}
+
+.auth-logo {
+    font-size: 48px;
+    background: linear-gradient(45deg, #ff3d7f, #3d91ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 16px;
+    animation: pulse 2s infinite;
+}
+
+.auth-title {
+    font-size: 28px;
+    font-weight: 800;
+    background: linear-gradient(45deg, #1a1a1a, #4a4a4a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.auth-subtitle {
+    color: #666;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.form-group {
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.form-control {
+    width: 100%;
+    padding: 16px;
+    padding-left: 48px;
+    background: white;
+    border: 2px solid #e1e1e1;
+    border-radius: 16px;
+    font-size: 15px;
+    transition: all 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.form-control:focus {
+    border-color: #3d91ff;
+    box-shadow: 
+        0 0 0 4px rgba(61, 145, 255, 0.1),
+        0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.form-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    transition: all 0.3s;
+}
+
+.form-control:focus + .form-icon {
+    color: #3d91ff;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.auth-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(45deg, #3d91ff, #2d6cff);
+    border: none;
+    border-radius: 16px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.auth-btn:hover::before {
+    left: 100%;
+}
+
+.auth-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 10px 20px rgba(45, 108, 255, 0.2),
+        0 6px 6px rgba(45, 108, 255, 0.1);
+}
+
+.auth-links {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.auth-links a {
+    color: #000dff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.auth-links a:hover {
+    text-decoration: underline;
+}
+
+.auth-separator {
+    margin: 24px 0;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #666;
+}
+
+.auth-separator::before,
+.auth-separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+.auth-separator span {
+    padding: 0 16px;
+    font-size: 14px;
+}
+
+.social-auth {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.social-btn {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #e1e1e1;
+    border-radius: 16px;
+    background: white;
+    color: #666;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.social-btn:hover {
+    border-color: #3d91ff;
+    color: #3d91ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.alert {
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    animation: slideDown 0.3s ease-out;
+}
+
+.alert-danger {
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .auth-box {
+        padding: 24px;
+    }
+
+    .auth-title {
+        font-size: 20px;
+    }
+
+    .social-auth {
+        flex-direction: column;
+    }
+}
+
+/* Add these animations at the end of your auth.css file */
+@keyframes float {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(20px, 20px) rotate(10deg); }
+}
+
+@keyframes particles {
+    0% { 
+        transform: translateY(0) rotate(0deg); 
+        opacity: 0; 
+    }
+    50% { opacity: 0.2; }
+    100% { 
+        transform: translateY(-1000px) rotate(360deg); 
+        opacity: 0; 
+    }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); }
+    100% { box-shadow: 0 20px 40px rgba(61, 145, 255, 0.2); }
+} 

@@ -1,90 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - Chat App</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <nav>
-        <div class="nav-wrapper">
-            <span>Profile Settings</span>
-            <div>
-                <a href="{{ url_for('chat_dashboard') }}">Dashboard</a>
-                <a href="{{ url_for('logout') }}">Logout</a>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-avatar">
+            {% if current_user.avatar_url %}
+                <img src="{{ url_for('static', filename=current_user.avatar_url) }}" alt="{{ current_user.username }}">
+            {% else %}
+                <div class="avatar-placeholder">{{ current_user.username[0] }}</div>
+            {% endif %}
+        </div>
+        <h1>{{ current_user.username }}</h1>
+        <p class="profile-email">{{ current_user.email }}</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('update_profile') }}" enctype="multipart/form-data" class="profile-form">
+        {{ form.hidden_tag() }}
+        
+        <div class="form-group">
+            {{ form.avatar.label }}
+            {{ form.avatar(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.username.label }}
+            {{ form.username(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.email.label }}
+            {{ form.email(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.bio.label }}
+            {{ form.bio(class="form-control") }}
+        </div>
+
+        <div class="form-section">
+            <h3>Change Password</h3>
+            <div class="form-group">
+                {{ form.current_password.label }}
+                {{ form.current_password(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.new_password.label }}
+                {{ form.new_password(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.confirm_new_password.label }}
+                {{ form.confirm_new_password(class="form-control") }}
             </div>
         </div>
-    </nav>
 
-    <div class="container">
-        <div class="profile-container">
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-info">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
+        <div class="form-group">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
 
-            <div class="profile-header">
-                <div class="avatar-section">
-                    {% if user.avatar_url %}
-                        <img src="{{ url_for('static', filename=user.avatar_url) }}" alt="Profile picture" class="avatar">
-                    {% else %}
-                        <div class="avatar-placeholder">{{ user.username[0].upper() }}</div>
-                    {% endif %}
-                </div>
-                <div class="user-info">
-                    <h2>{{ user.username }}</h2>
-                    <p>Member since: {{ user.created_at.strftime('%Y-%m-%d') }}</p>
-                </div>
-            </div>
-
-            <div class="profile-form">
-                <form method="POST" enctype="multipart/form-data">
-                    {{ form.hidden_tag() }}
-                    
-                    <div class="form-section">
-                        <h3>Basic Information</h3>
-                        <div class="form-group">
-                            {{ form.username.label }}
-                            {{ form.username(class="form-control") }}
-                        </div>
-                        <div class="form-group">
-                            {{ form.email.label }}
-                            {{ form.email(class="form-control") }}
-                        </div>
-                        <div class="form-group">
-                            {{ form.bio.label }}
-                            {{ form.bio(class="form-control") }}
-                        </div>
-                        <div class="form-group">
-                            {{ form.avatar.label }}
-                            {{ form.avatar(class="form-control") }}
-                        </div>
-                    </div>
-
-                    <div class="form-section">
-                        <h3>Change Password</h3>
-                        <div class="form-group">
-                            {{ form.current_password.label }}
-                            {{ form.current_password(class="form-control") }}
-                        </div>
-                        <div class="form-group">
-                            {{ form.new_password.label }}
-                            {{ form.new_password(class="form-control") }}
-                        </div>
-                        <div class="form-group">
-                            {{ form.confirm_new_password.label }}
-                            {{ form.confirm_new_password(class="form-control") }}
-                        </div>
-                    </div>
-
-                    {{ form.submit(class="btn btn-primary") }}
-                </form>
-            </div>
+    <div class="theme-selector">
+        <h3>Theme</h3>
+        <div class="theme-options">
+            <button class="theme-btn light" data-theme="light">Light</button>
+            <button class="theme-btn dark" data-theme="dark">Dark</button>
+            <button class="theme-btn purple" data-theme="purple">Purple</button>
         </div>
     </div>
-</body>
-</html> 
+</div>
+{% endblock %} 
