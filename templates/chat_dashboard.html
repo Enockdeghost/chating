@@ -1,123 +1,132 @@
 {% extends "base.html" %}
 
 {% block extra_head %}
-<script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
-{% endblock %}
-
-{% block nav_items %}
-<a href="{{ url_for('profile') }}" class="nav-link">
-    {% if current_user.avatar_url %}
-        <img src="{{ url_for('static', filename=current_user.avatar_url) }}" alt="Profile" class="nav-avatar">
-    {% else %}
-        <i class="fas fa-user-circle"></i>
-    {% endif %}
-</a>
-<a href="{{ url_for('notifications') }}" class="nav-link notifications">
-    <i class="fas fa-bell"></i>
-    {% if notifications %}
-        <span class="badge pulse">{{ notifications|length }}</span>
-    {% endif %}
-</a>
-<a href="{{ url_for('logout') }}" class="nav-link">
-    <i class="fas fa-sign-out-alt"></i>
-</a>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="dashboard-container">
-    <div class="sidebar">
-        <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" id="searchInput" data-translate="search" placeholder="Tafuta watumiaji au vikundi...">
-        </div>
-
-        <div class="chat-sections">
-            <div class="section-header">
-                <h3><i class="fas fa-user-friends"></i> Private Chats</h3>
+<div class="chat-dashboard">
+    <aside class="chat-sidebar">
+        <div class="sidebar-header">
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" class="search-input" placeholder="Search users or messages">
             </div>
-            <ul class="user-list" id="userList">
-                {% for user in users %}
-                <li>
-                    <a href="{{ url_for('private_chat', user_id=user.id) }}" class="user-item">
-                        {% if user.avatar_url %}
-                            <img src="{{ url_for('static', filename=user.avatar_url) }}" alt="{{ user.username }}" class="chat-avatar">
+            <div class="search-results" style="display: none;">
+                <div class="search-results-header">
+                    <h3>Search Results</h3>
+                    <button class="close-search">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="search-results-list"></div>
+            </div>
+            <div class="chat-filters">
+                <button class="filter-btn active">All</button>
+                <button class="filter-btn">Unread</button>
+                <button class="filter-btn">Groups</button>
+            </div>
+        </div>
+        
+        <div class="chats-container">
+            {% for chat in chats %}
+            <div class="chat-item {% if chat.active %}active{% endif %}" 
+                 data-chat-id="{{ chat.id.split('_')[1] }}"
+                 data-chat-type="{{ chat.type }}">
+                <div class="chat-avatar">
+                    {% if chat.avatar %}
+                        <img src="{{ chat.avatar }}" alt="{{ chat.name }}">
+                    {% else %}
+                        <div class="avatar-placeholder">{{ chat.name[0] }}</div>
+                    {% endif %}
+                    {% if chat.online %}
+                        <span class="online-badge"></span>
+                    {% endif %}
+                </div>
+                <div class="chat-content">
+                    <div class="chat-title">{{ chat.name }}</div>
+                    <div class="chat-message">{{ chat.last_message }}</div>
+                </div>
+                <div class="chat-meta">
+                    <div class="chat-time">{{ chat.time }}</div>
+                    {% if chat.unread %}
+                        <span class="chat-badge">{{ chat.unread }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </aside>
+
+    <main class="chat-area">
+        {% if current_chat.id %}
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <div class="chat-avatar">
+                        {% if current_chat.avatar %}
+                            <img src="{{ current_chat.avatar }}" alt="{{ current_chat.name }}">
                         {% else %}
-                            <div class="chat-avatar-placeholder">{{ user.username[0].upper() }}</div>
+                            <div class="avatar-placeholder">{{ current_chat.name[0] }}</div>
                         {% endif %}
-                        <div class="user-info">
-                            <span class="username">{{ user.username }}</span>
-                            <span class="last-seen" data-translate="lastSeen">Alionekana hivi karibuni</span>
+                        {% if current_chat.online %}
+                            <span class="online-badge"></span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <div class="chat-header-title">{{ current_chat.name }}</div>
+                        <div class="chat-header-subtitle">
+                            {% if current_chat.online %}Online{% else %}Offline{% endif %}
                         </div>
-                    </a>
-                </li>
-                {% endfor %}
-            </ul>
-
-            <div class="section-header">
-                <h3><i class="fas fa-users"></i> Group Chats</h3>
-                <a href="{{ url_for('create_group') }}" class="btn btn-create-group">
-                    <i class="fas fa-plus"></i>
-                </a>
-            </div>
-            <ul class="group-list">
-                {% for group in groups %}
-                <li>
-                    <a href="{{ url_for('group_chat', group_id=group.id) }}" class="group-item">
-                        <div class="group-avatar">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="group-info">
-                            <span class="group-name">{{ group.name }}</span>
-                            <span class="member-count">{{ group.members|length }} <span data-translate="members">wanachama</span></span>
-                        </div>
-                    </a>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-
-    <div class="main-content">
-        <div class="welcome-section">
-            <h1 data-translate="welcome">Karibu kwenye Ni Kuchatika tu</h1>
-            <p data-translate="selectChat">Chagua chat kuanza kuwasiliana</p>
-            <div class="features">
-                <div class="feature-card">
-                    <i class="fas fa-user-shield"></i>
-                    <h3 data-translate="privateChat">Chat Binafsi</h3>
-                    <p data-translate="privateDesc">Tuma ujumbe kwa mtu binafsi</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-users"></i>
-                    <h3 data-translate="groupChat">Chat ya Kikundi</h3>
-                    <p data-translate="groupDesc">Unda na jiunge na mazungumzo ya kikundi</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-bell"></i>
-                    <h3 data-translate="notifications">Arifa</h3>
-                    <p data-translate="notifDesc">Pokea taarifa za papo kwa papo</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+
+            <div class="messages-container">
+                {% for message in messages %}
+                <div class="message {% if message.sent %}sent{% else %}received{% endif %}">
+                    {% if not message.sent %}
+                    <div class="message-avatar">
+                        {% if message.avatar %}
+                            <img src="{{ message.avatar }}" alt="{{ message.sender }}">
+                        {% else %}
+                            <div class="avatar-placeholder">{{ message.sender[0] }}</div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    <div class="message-content">
+                        <div class="message-bubble">{{ message.content }}</div>
+                        <div class="message-time">{{ message.time }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="chat-input">
+                <form method="POST" class="message-form" id="messageForm">
+                    <div class="input-container">
+                        <button type="button" class="input-action-btn">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <textarea class="message-input" placeholder="Type a message..." rows="1"></textarea>
+                        <button type="submit" class="input-action-btn send-btn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        {% else %}
+            <div class="empty-chat">
+                <div class="empty-chat-content">
+                    <i class="fas fa-comments"></i>
+                    <h2>Welcome to Chatika TANAPA</h2>
+                    <p>Select a chat to start messaging</p>
+                </div>
+            </div>
+        {% endif %}
+    </main>
 </div>
+{% endblock %}
 
 {% block extra_scripts %}
-<script>
-    // Search functionality
-    document.getElementById('searchInput').addEventListener('input', function(e) {
-        const searchTerm = e.target.value.toLowerCase();
-        const userItems = document.querySelectorAll('#userList li');
-        
-        userItems.forEach(item => {
-            const username = item.querySelector('.username').textContent.toLowerCase();
-            if (username.includes(searchTerm)) {
-                item.style.display = '';
-            } else {
-                item.style.display = 'none';
-            }
-        });
-    });
-</script>
-{% endblock %}
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 {% endblock %} 

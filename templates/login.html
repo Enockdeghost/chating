@@ -1,28 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+
+        h1 {
+            font-size: 2em;
+            color: #333;
+        }
+
+        form {
+            display: inline-block;
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            color: #fff;
+            background-color: #5bc0de;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .flash {
+            margin-bottom: 20px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Login</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flash">
+        {% for category, message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <form method="POST" action="{{ url_for('login') }}">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        
+        <button type="submit">Login</button>
+    </form>
+</body>
+</html>
 {% extends "base.html" %}
 
 {% block content %}
 <div class="auth-container">
-    <h1>Login</h1>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-danger">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <div class="form-group">
-            {{ form.email.label }}
-            {{ form.email(class="form-control") }}
+    <div class="auth-box">
+        <div class="auth-header">
+            <div class="auth-logo">
+                <i class="fas fa-comments"></i>
+            </div>
+            <h1 class="auth-title">Welcome Back</h1>
+            <p class="auth-subtitle">Sign in to continue to Chat</p>
         </div>
-        <div class="form-group">
-            {{ form.password.label }}
-            {{ form.password(class="form-control") }}
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST" class="auth-form">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.email(class="form-control", placeholder="Enter your email") }}
+                <i class="fas fa-envelope form-icon"></i>
+            </div>
+            <div class="form-group">
+                {{ form.password(class="form-control", placeholder="Enter your password") }}
+                <i class="fas fa-lock form-icon"></i>
+            </div>
+            <div class="form-group remember-me">
+                {{ form.remember(class="form-check-input") }}
+                {{ form.remember.label }}
+            </div>
+            {{ form.submit(class="auth-btn") }}
+        </form>
+
+        <div class="auth-separator">
+            <span>OR</span>
         </div>
-        {{ form.submit(class="btn btn-primary") }}
-    </form>
-    <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a></p>
+
+        <div class="social-auth">
+            <button class="social-btn">
+                <i class="fab fa-google"></i>
+                Google
+            </button>
+            <button class="social-btn">
+                <i class="fab fa-facebook-f"></i>
+                Facebook
+            </button>
+        </div>
+
+        <div class="auth-links">
+            <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a></p>
+        </div>
+    </div>
 </div>
 {% endblock %} 

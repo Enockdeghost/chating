@@ -1,40 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="{{ current_user.theme if current_user.is_authenticated else 'light' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Ni Kuchatika tu{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>{% block title %}Chatika TANAPA{% endblock %}</title>
+    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     {% block extra_head %}{% endblock %}
 </head>
 <body>
-    <nav>
-        <div class="nav-wrapper">
-            <div class="nav-left">
-                <span class="logo"><i class="fas fa-comments"></i> Ni Kuchatika tu</span>
-                {% if current_user.is_authenticated %}
-                    <span class="welcome-text" data-translate="welcome-user">Karibu, {{ current_user.username }}</span>
-                {% endif %}
-            </div>
-            {% if current_user.is_authenticated %}
-            <div class="nav-right">
-                <button id="themeToggle" class="nav-link" aria-label="Toggle theme">
-                    <i class="fas fa-moon" aria-hidden="true"></i>
-                </button>
-                <button id="languageToggle" class="nav-link">
-                    <i class="fas fa-globe"></i>
-                    <span class="lang-text">En/Sw</span>
-                </button>
-                {% block nav_items %}{% endblock %}
-            </div>
-            {% endif %}
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <img src="{{ url_for('static', filename='images/tanapa_logo.jpg') }}" alt="TANAPA Logo" class="navbar-logo">
+            <span class="navbar-title">Chatika TANAPA</span>
         </div>
+        {% if current_user.is_authenticated %}
+        <div class="navbar-menu">
+            <a href="{{ url_for('chat_dashboard') }}" class="nav-link">
+                <i class="fas fa-comments"></i>
+                Chats
+            </a>
+            <a href="{{ url_for('profile') }}" class="nav-link">
+                <i class="fas fa-user"></i>
+                Profile
+            </a>
+            <a href="{{ url_for('logout') }}" class="nav-link">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </div>
+        {% endif %}
     </nav>
 
-    {% block content %}{% endblock %}
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </div>
 
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
     {% block extra_scripts %}{% endblock %}
 </body>
 </html> 
